@@ -56,6 +56,7 @@ const BluetoothBeacons = () => {
       <Body>
         <Text>{item.uuid}</Text>
         <Text note>{item.proximity}</Text>
+        <Text note>{item.distance}</Text>
       </Body>
     </ListItem>
   );

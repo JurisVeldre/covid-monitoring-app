@@ -15,7 +15,8 @@
     "native-base": "2.13.8",
     "react": "16.13.1",
     "react-native": "0.63.3",
-    "react-native-beacons-manager": "^1.0.7"
+    "react-native-beacons-manager": "^1.0.7",
+    "react-native-cardview": "^2.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

@@ -1,9 +1,9 @@
 import React from 'react'
-import BluetoothBeacons from './bluetoothBeacons'
+import MainCardView from './mainCardView'
 
-const App: () => React$Node = () => {
+const App = () => {
   return (
-    <BluetoothBeacons/>
+    <MainCardView/>
   );
 };
 

@@ -1,26 +1,49 @@
-import { Body, Container, Header, Left, ListItem, Right, Title, Text } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import Beacons from 'react-native-beacons-manager'
-import { FlatList, StyleSheet, PermissionsAndroid, DeviceEventEmitter } from 'react-native';
-import {objCompare, arraysEqual} from './objCompare'
-const BluetoothBeacons = () => {
+import { PermissionsAndroid, DeviceEventEmitter } from 'react-native';
+
+const BluetoothBeacons = ({setBeacons}) => {
+  const [beacons, setListBeacons] = useState([])
+  const [firstTime, setFirstTime] = useState(true)
 
   useEffect(() => {
-    // Tells the library to detect iBeacons
-    Beacons.detectIBeacons()
-    requestCameraPermission()
-
-    DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
-      if (data.beacons !== beacons && data.beacons !== []) {
-        setBeacons(data.beacons)
-        console.log('Setting beacons to', data.beacons)
-      }
-    })
+    if (firstTime) {
+      requestCourseLocationPermission()
+      addListener()
+      Beacons.detectIBeacons()
+      setFirstTime(false)
+    }
   }, []);
 
-  const [beacons, setBeacons] = useState([])
+  const addListener = () => {
+    DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
+      if (!arraysEqual(beacons, data.beacons) || data.beacons.length === 0) {
+        checkRoom(data.beacons)
+        setListBeacons(data.beacons)
+      }
+    })
+  }
 
-  const requestCameraPermission = async () => {
+  const checkRoom = (beacons) => {
+    //beacons is array
+    var shortestDistance = 100
+    var bestBeacon
+    beacons.forEach(beacon => { 
+        if (beacon.distance < shortestDistance) {
+          shortestDistance = beacon.distance
+          bestBeacon = beacon
+        }
+    })
+    setBeacons(bestBeacon)
+      //   [{"distance": 1.099394345972351, "major": 0, "minor": 0, "proximity": "near", "rssi": -75, "uuid": "ebf26430-fcb4-4370-9ff2-2236bf9567e9"}, {"distance": 1.3915545315304618, "major": 0, "minor": 1, "proximity": "near", "rssi": -76, "uuid": "f9a5ed19-ce00-495b-b715-cda1478ec9a1"}, {"distance": 1.0215479253994402, "major": 0, "minor": 0, "proximity": "near", "rssi": -70, "uuid": "7623f849-2d5a-4bbf-9d45-3efcddceff3b"}]
+      // })
+  }
+
+  const objectsEqual = (o1, o2) => typeof o1 === 'object' && Object.keys(o1).length > 0 ? Object.keys(o1).length === Object.keys(o2).length && Object.keys(o1).every(p => objectsEqual(o1[p], o2[p])) : o1 === o2;
+
+  const arraysEqual = (a1, a2) => a1.length === a2.length && a1.every((o, idx) => objectsEqual(o, a2[idx]));
+
+  const requestCourseLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
@@ -34,6 +57,7 @@ const BluetoothBeacons = () => {
         }
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("starting ranging")
         rangeBeacons()
       } else {
         console.log("location permission denied");
@@ -51,36 +75,9 @@ const BluetoothBeacons = () => {
       console.log(`Beacons ranging not started, error: ${err}`)
     }
   };
-  const renderItem = ({ item }) => (
-    <ListItem>
-      <Body>
-        <Text>{item.uuid}</Text>
-        <Text note>{item.proximity}</Text>
-        <Text note>{item.distance}</Text>
-      </Body>
-    </ListItem>
-  );
-
-  const extractKey = item => item.uuid
-
   return (
-    <Container>
-      <Header>
-        <Left/>
-        <Body>
-          <Title>Beacon List</Title>
-        </Body>
-        <Right/>
-      </Header>
-    <FlatList
-      data={beacons}
-      renderItem={renderItem}
-      keyExtractor={extractKey}/>
-    </Container>
+    <></>
   );
 }
-
-const styles = StyleSheet.create({
-});
 
 export default BluetoothBeacons;

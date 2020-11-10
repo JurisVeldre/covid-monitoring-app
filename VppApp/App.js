@@ -1,10 +1,8 @@
 import React from 'react'
 import MainCardView from './mainCardView'
 
-const App = () => {
+export default App = () => {
   return (
     <MainCardView/>
   );
 };
-
-export default App;

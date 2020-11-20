@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Beacons from 'react-native-beacons-manager'
 import { PermissionsAndroid, DeviceEventEmitter } from 'react-native';
 
 const BluetoothBeacons = ({setBeacons}) => {
-  const [beacons, setListBeacons] = useState([])
+  const beacons = useRef([])
   const [firstTime, setFirstTime] = useState(true)
+  const beaconScanCount = useRef(null)
 
   useEffect(() => {
     if (firstTime) {
@@ -17,31 +18,38 @@ const BluetoothBeacons = ({setBeacons}) => {
 
   const addListener = () => {
     DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
-      if (!arraysEqual(beacons, data.beacons) || data.beacons.length === 0) {
-        checkRoom(data.beacons)
-        setListBeacons(data.beacons)
+      if (beaconScanCount.current >= 10) {
+        beaconScanCount.current = 0
+        checkRoom()
+      } else {
+        beaconScanCount.current = beaconScanCount.current + 1
+        beacons.current = beacons.current.concat(data.beacons)
+        console.log(beaconScanCount.current)
       }
     })
   }
 
-  const checkRoom = (beacons) => {
-    //beacons is array
+  const checkRoom = () => {
+    console.log(beacons.current)
+    var result = beacons.current.reduce((unique, o) => {
+      if(!unique.some(obj => obj.uuid === o.uuid)) {
+        unique.push(o);
+      }
+      return unique;
+    },[]);
+
     var shortestDistance = 100
     var bestBeacon
-    beacons.forEach(beacon => { 
+    result.forEach(beacon => { 
         if (beacon.distance < shortestDistance) {
           shortestDistance = beacon.distance
           bestBeacon = beacon
         }
     })
+    
+    beacons.current = []
     setBeacons(bestBeacon)
-      //   [{"distance": 1.099394345972351, "major": 0, "minor": 0, "proximity": "near", "rssi": -75, "uuid": "ebf26430-fcb4-4370-9ff2-2236bf9567e9"}, {"distance": 1.3915545315304618, "major": 0, "minor": 1, "proximity": "near", "rssi": -76, "uuid": "f9a5ed19-ce00-495b-b715-cda1478ec9a1"}, {"distance": 1.0215479253994402, "major": 0, "minor": 0, "proximity": "near", "rssi": -70, "uuid": "7623f849-2d5a-4bbf-9d45-3efcddceff3b"}]
-      // })
   }
-
-  const objectsEqual = (o1, o2) => typeof o1 === 'object' && Object.keys(o1).length > 0 ? Object.keys(o1).length === Object.keys(o2).length && Object.keys(o1).every(p => objectsEqual(o1[p], o2[p])) : o1 === o2;
-
-  const arraysEqual = (a1, a2) => a1.length === a2.length && a1.every((o, idx) => objectsEqual(o, a2[idx]));
 
   const requestCourseLocationPermission = async () => {
     try {

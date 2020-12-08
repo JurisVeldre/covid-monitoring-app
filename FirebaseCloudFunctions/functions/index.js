@@ -36,33 +36,21 @@ exports.parseCountReports = functions.database.ref('/rooms/{roomID}/reports/{use
   var previousSum = 0
   var previousCount = 0
 
-  console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-  console.log("uid: ", uid)
-
   return reportRef.once('value', (snapshot) => {
     for (const [key, value] of Object.entries(snapshot.val())) {
-      console.log("===================")
       if (key !== uid) {
         previousSum += value.count
       }
-      console.log("key: ", key)
-      console.log("value: ", value)
       reportCount++
       previousCount++
       pplCountSum += value.count
-      console.log("===================")
     }
     previousSum += oldReport
   }).then(() => {
     return pplCountRef.transaction((count) => {
-      console.log("count b4 oldAvg: ", count)
       const oldAvg = previousSum / previousCount
-      console.log("oldAvg: ", oldAvg)
-      count =- oldAvg 
-      console.log("count after oldAvg: ", count)
-      count =+ (pplCountSum / reportCount)
-      console.log("count after newAvg: ", count)
-      console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+      count = count - oldAvg 
+      count = count + (pplCountSum / reportCount)
       return count 
     })
   })

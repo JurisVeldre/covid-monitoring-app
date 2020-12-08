@@ -1,13 +1,31 @@
-# Android/IntelliJ
-#
-build/
-.idea
-.gradle
+#built application files
+*.apk
+*.ap_
+*.aab
+                           
+# Java class files
+*.class
+                            
+# generated files
+bin/
+gen/
+                            
+# Local configuration file (sdk path, etc)
 local.properties
-*.iml
+                        
+# Windows thumbnail db
+Thumbs.db
 
-# node.js
-#
-node_modules/
-package-lock.json # include if you are using npm - don't use both yarn and npm
-npm-debug.log
+# Android Studio
+*.iml
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
+build/
+.navigation
+captures/
+output.json 
+    
+#NDK
+obj/
+.externalNativeBuild

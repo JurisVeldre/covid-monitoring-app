@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:popupTheme="?attr/actionBarPopupTheme"
+        android:elevation="4dp"
+        tools:ignore="MissingConstraints"
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:id="@+id/peopleView"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/toolbar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/peopleImage"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/people"
+        app:layout_constraintBottom_toBottomOf="@+id/peopleView"
+        app:layout_constraintStart_toStartOf="@+id/peopleView"
+        app:layout_constraintTop_toTopOf="@+id/peopleView"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <View
+        android:id="@+id/peopleSeparator"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#667896"
+        app:layout_constraintBottom_toBottomOf="@+id/peopleView"
+        app:layout_constraintStart_toEndOf="@+id/peopleImage"
+        app:layout_constraintTop_toTopOf="@+id/peopleView" />
+
+    <TextView
+        android:id="@+id/peopleCountTitleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/people_in_room"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/peopleView"
+        app:layout_constraintStart_toEndOf="@+id/peopleSeparator"
+        app:layout_constraintTop_toTopOf="@+id/peopleView" />
+
+    <TextView
+        android:id="@+id/peopleCountLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/zero"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/peopleView"
+        app:layout_constraintEnd_toEndOf="@+id/peopleView"
+        app:layout_constraintStart_toEndOf="@+id/peopleCountTitleLabel"
+        app:layout_constraintTop_toTopOf="@+id/peopleView" />
+
+    <View
+        android:id="@+id/temperatureView"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/peopleView" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/temperatureImage"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/temperature"
+        app:layout_constraintBottom_toBottomOf="@+id/temperatureView"
+        app:layout_constraintStart_toStartOf="@+id/temperatureView"
+        app:layout_constraintTop_toTopOf="@+id/temperatureView"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <View
+        android:id="@+id/TemperatureSeparator"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#667896"
+        app:layout_constraintBottom_toBottomOf="@+id/temperatureView"
+        app:layout_constraintStart_toEndOf="@+id/temperatureImage"
+        app:layout_constraintTop_toTopOf="@+id/temperatureView" />
+
+    <TextView
+        android:id="@+id/temperatureTitleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/temperature_in_room"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/temperatureView"
+        app:layout_constraintStart_toEndOf="@+id/TemperatureSeparator"
+        app:layout_constraintTop_toTopOf="@+id/temperatureView" />
+
+    <TextView
+        android:id="@+id/temperatureCountLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/zero"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/temperatureView"
+        app:layout_constraintEnd_toEndOf="@+id/temperatureView"
+        app:layout_constraintStart_toEndOf="@+id/temperatureTitleLabel"
+        app:layout_constraintTop_toTopOf="@+id/temperatureView" />
+
+    <View
+        android:id="@+id/co2View"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureView" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/co2Image"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/co2"
+        app:layout_constraintBottom_toBottomOf="@+id/co2View"
+        app:layout_constraintStart_toStartOf="@+id/co2View"
+        app:layout_constraintTop_toTopOf="@+id/co2View"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <View
+        android:id="@+id/co2Separator"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#667896"
+        app:layout_constraintBottom_toBottomOf="@+id/co2View"
+        app:layout_constraintStart_toEndOf="@+id/co2Image"
+        app:layout_constraintTop_toTopOf="@+id/co2View" />
+
+    <TextView
+        android:id="@+id/co2TitleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/co2_in_room"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/co2View"
+        app:layout_constraintStart_toEndOf="@+id/co2Separator"
+        app:layout_constraintTop_toTopOf="@+id/co2View" />
+
+    <TextView
+        android:id="@+id/co2CountLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/zero"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/co2View"
+        app:layout_constraintEnd_toEndOf="@+id/co2View"
+        app:layout_constraintStart_toEndOf="@+id/co2TitleLabel"
+        app:layout_constraintTop_toTopOf="@+id/co2View" />
+
+    <View
+        android:id="@+id/moistureView"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/co2View" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/moistureImage"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/moisture"
+        app:layout_constraintBottom_toBottomOf="@+id/moistureView"
+        app:layout_constraintStart_toStartOf="@+id/moistureView"
+        app:layout_constraintTop_toTopOf="@+id/moistureView"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <View
+        android:id="@+id/moistureSeparator"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#667896"
+        app:layout_constraintBottom_toBottomOf="@+id/moistureView"
+        app:layout_constraintStart_toEndOf="@+id/moistureImage"
+        app:layout_constraintTop_toTopOf="@+id/moistureView" />
+
+    <TextView
+        android:id="@+id/moistureTitleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/moisture_in_room"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/moistureView"
+        app:layout_constraintStart_toEndOf="@+id/moistureSeparator"
+        app:layout_constraintTop_toTopOf="@+id/moistureView" />
+
+    <TextView
+        android:id="@+id/moistureCountLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/zero"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/moistureView"
+        app:layout_constraintEnd_toEndOf="@+id/moistureView"
+        app:layout_constraintStart_toEndOf="@+id/moistureTitleLabel"
+        app:layout_constraintTop_toTopOf="@+id/moistureView" />
+
+    <View
+        android:id="@+id/pressureView"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moistureView" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/pressureImage"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/pressure"
+        app:layout_constraintBottom_toBottomOf="@+id/pressureView"
+        app:layout_constraintStart_toStartOf="@+id/pressureView"
+        app:layout_constraintTop_toTopOf="@+id/pressureView"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <View
+        android:id="@+id/pressureSeparator"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#667896"
+        app:layout_constraintBottom_toBottomOf="@+id/pressureView"
+        app:layout_constraintStart_toEndOf="@+id/pressureImage"
+        app:layout_constraintTop_toTopOf="@+id/pressureView" />
+
+    <TextView
+        android:id="@+id/pressureTitleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/pressure_in_room"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/pressureView"
+        app:layout_constraintStart_toEndOf="@+id/pressureSeparator"
+        app:layout_constraintTop_toTopOf="@+id/pressureView" />
+
+    <TextView
+        android:id="@+id/pressureCountLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/zero"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/pressureView"
+        app:layout_constraintEnd_toEndOf="@+id/pressureView"
+        app:layout_constraintStart_toEndOf="@+id/pressureTitleLabel"
+        app:layout_constraintTop_toTopOf="@+id/pressureView" />
+
+    <Button
+        android:id="@+id/reportCountButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        style="?android:attr/borderlessButtonStyle"
+        android:drawableStart="@drawable/background_container"
+        android:drawablePadding="10dp"
+        android:text="@string/report_people_count_in_room"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pressureView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

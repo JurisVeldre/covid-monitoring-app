@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">covid-monitoring-app</string>
+    <string name="location_permission_disabled">We need location permission to guarantee connection</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="location_permission_not_granted">Location permission not granted</string>
+    <string name="register">Register</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="report_count">Report people count</string>
+    <string name="people_in_room">People in room:</string>
+    <string name="zero">0</string>
+    <string name="temperature_in_room">Temperature in room:</string>
+    <string name="co2_in_room">Co2 in room:</string>
+    <string name="moisture_in_room">Moisture in room</string>
+    <string name="pressure_in_room">Atmospheric\npressure in room</string>
+    <string name="report_people_count_in_room">Report people\ncount in room</string>
+</resources>

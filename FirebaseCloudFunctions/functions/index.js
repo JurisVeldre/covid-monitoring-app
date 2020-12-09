@@ -5,13 +5,19 @@ admin.initializeApp();
 
 const db = admin.database()
 
+const removeReport = (uid, oldRoomID) => {
+  const reportRef = db.ref(`rooms/${oldRoomID}/reports/${uid}`)
+  return reportRef.remove()
+}
+
 exports.updateRooms = functions.database.ref('/users/{userID}').onWrite((change, context) => {
   const newRoomID = change.after.val().roomId
   const oldRoomID = change.before.val().roomId
-  
+
   const removePersonRef = db.ref(`rooms/${oldRoomID}`).child('pplCount')
   const addPersonRef = db.ref(`rooms/${newRoomID}`).child('pplCount')
 
+  const removeUserReport = removeReport(context.params.userID, oldRoomID)
   const removePerson = removePersonRef.transaction(count => {
     return count - 1
   })
@@ -20,11 +26,11 @@ exports.updateRooms = functions.database.ref('/users/{userID}').onWrite((change,
     return count + 1
   })
 
-  return Promise.all([addPerson, removePerson])
+  return Promise.all([addPerson, removePerson, removeUserReport])
 });
 
 exports.parseCountReports = functions.database.ref('/rooms/{roomID}/reports/{userID}').onWrite((change, context) => {
-  const oldReport = change.before.val().count
+  const oldReport = change.before.val() !== null ? change.before.val().count : 0
   const roomId = context.params.roomID
   const uid = context.params.userID
 
@@ -37,20 +43,28 @@ exports.parseCountReports = functions.database.ref('/rooms/{roomID}/reports/{use
   var previousCount = 0
 
   return reportRef.once('value', (snapshot) => {
-    for (const [key, value] of Object.entries(snapshot.val())) {
-      if (key !== uid) {
-        previousSum += value.count
+    if (snapshot.exists()) {
+      for (const [key, value] of Object.entries(snapshot.val())) {
+        if (key !== uid) {
+          previousSum += value.count
+        }
+        reportCount++
+        previousCount++
+        pplCountSum += value.count
       }
-      reportCount++
-      previousCount++
-      pplCountSum += value.count
+      previousSum = oldReport ? previousSum + oldReport : previousSum
+    } else {
+      previousSum = oldReport ? oldReport : previousSum
+      previousCount = 1
+      pplCountSum = 0
+      reportCount = 1
     }
-    previousSum += oldReport
   }).then(() => {
     return pplCountRef.transaction((count) => {
       const oldAvg = previousSum / previousCount
       count = count - oldAvg 
-      count = count + (pplCountSum / reportCount)
+      const newAvg = pplCountSum / reportCount
+      count += newAvg 
       return count 
     })
   })

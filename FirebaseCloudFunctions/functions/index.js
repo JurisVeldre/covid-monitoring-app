@@ -1,9 +1,39 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const { user } = require('firebase-functions/lib/providers/auth');
+var mqtt = require('mqtt');
+var fs = require('fs')
 admin.initializeApp();
 
 const db = admin.database()
+var client
+
+fs.readFile("cert.pem", ((err, data) => {
+  if (err) {
+    console.log(err.stack)
+    return
+  }
+  var options = {
+    port: 8883,
+    host: "mqtts://ec2-13-48-133-235.eu-north-1.compute.amazonaws.com",
+    username: 'vpp-user',
+    password: 'ECMlim@1',
+    ca: data.toString(),
+    rejectUnauthorized: true,
+  }
+  
+  client = mqtt.connect('mqtts://ec2-13-48-133-235.eu-north-1.compute.amazonaws.com:8883', options)
+  
+  
+  client.on('connect', (() => {
+    console.log('client connected');
+  }))
+  
+  client.on('error', ( (err) => {
+    console.error("mqtt client on Error :", err.message);
+    client.end()
+  }))
+}));
 
 const removeReport = (uid, oldRoomID) => {
   const reportRef = db.ref(`rooms/${oldRoomID}/reports/${uid}`)
@@ -69,3 +99,30 @@ exports.parseCountReports = functions.database.ref('/rooms/{roomID}/reports/{use
     })
   })
 })
+
+exports.pplCountChange = functions.database.ref('/rooms/{roomID}/pplCount').onWrite(async (change, context) => {
+  const newPplCount = change.after.val().pplCount
+  
+  const mqtt = await publishViaMqtt("", newPplCount)
+  return mqtt
+})
+
+const publishViaMqtt = async (roomId, peopleCount) => {
+  const topic = 'Test/test'
+  var message = {
+    peopleCount
+  }
+  message = JSON.stringify(message)
+  return new Promise((resolve, reject) => {
+
+    client.publish(topic, message, ( (err) => {
+      if (err) {
+        console.log("MqttError publish:" + err.message);
+        reject(err);
+      } else {
+        console.log("Message published")
+        resolve()
+      }
+    }))
+  })
+}

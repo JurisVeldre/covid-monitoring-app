@@ -36,15 +36,19 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun onRegister() {
-        auth.createUserWithEmailAndPassword(emailField.text.toString(), passwordField.text.toString())
-            .addOnCompleteListener(this) {task ->
-                if (task.isSuccessful) {
-                    startActivity(Intent(this, RangingActivity::class.java))
-                } else if (task.isCanceled) {
-                    val errorText = if (!task.isSuccessful) task.exception?.message.toString() else "Registration failed"
-                    Toast.makeText(baseContext, errorText,
-                        Toast.LENGTH_SHORT).show()
+        val email = emailField.text.toString()
+        val pass = passwordField.text.toString()
+        if (email.isNotEmpty() && pass.isNotEmpty()) {
+            auth.createUserWithEmailAndPassword(email, pass)
+                .addOnCompleteListener(this) {task ->
+                    if (task.isSuccessful) {
+                        startActivity(Intent(this, RangingActivity::class.java))
+                    } else if (task.exception != null) {
+                        val errorText = if (!task.isSuccessful) task.exception?.message.toString() else "Registration failed"
+                        Toast.makeText(baseContext, errorText,
+                            Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
+        }
     }
 }

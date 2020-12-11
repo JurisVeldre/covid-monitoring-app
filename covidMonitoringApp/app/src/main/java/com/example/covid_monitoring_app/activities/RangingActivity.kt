@@ -115,6 +115,7 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
     private fun setupToolbar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.title = "No Room Found"
         supportActionBar?.setHomeAsUpIndicator(R.drawable.logout_button)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -136,7 +137,7 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
     }
 
     private fun getData() {
-        val url = "http://0514485d9f81.ngrok.io/institutions/5fc0e64967ab055ee9422dd3/rooms/5fc10cd967ab055ee9422de2/api"
+        val url = "http://c89dcc90f99d.ngrok.io/institutions/5fc0e64967ab055ee9422dd3/rooms/5fc10cd967ab055ee9422de2/api"
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,
@@ -282,16 +283,36 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         return contains
     }
 
+    private fun resetUI() {
+        val pplLabel = findViewById<TextView>(R.id.peopleCountLabel)
+        val co2Label = findViewById<TextView>(R.id.co2CountLabel)
+        val temperatureLabel = findViewById<TextView>(R.id.temperatureCountLabel)
+        val humidityLabel = findViewById<TextView>(R.id.moistureCountLabel)
+        val pressureLabel = findViewById<TextView>(R.id.pressureCountLabel)
+
+        pplLabel.text = "..."
+        co2Label.text = "..."
+        temperatureLabel.text = "..."
+        humidityLabel.text = "..."
+        pressureLabel.text = "..."
+        supportActionBar?.title = "..."
+    }
+
 
     private fun parseBeacons(beacons: (Array<Beacon>)) {
         val closestBeacon = beacons.minBy { it.distance }
         Log.i(TAG, "Closest beacon: $closestBeacon")
         noneCount = 0
+        if (!checkRoomList(closestBeacon)) {
+            resetUI()
+            sendLocation(null)
+            this.closestBeacon = null
+        }
         if (closestBeacon == null || checkRoomList(closestBeacon)) {
             if (closestBeacon != this.closestBeacon) {
                 sendLocation(closestBeacon)
                 this.closestBeacon = closestBeacon
-                getData()
+                if (closestBeacon != null) getData() else resetUI()
                 refreshCounter = 0
             }
             if (refreshCounter > 59) {

@@ -34,15 +34,22 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun onLogin() {
-        auth.signInWithEmailAndPassword(emailField.text.toString(), passwordField.text.toString())
-            .addOnCompleteListener(this) {task ->
-            if (task.isSuccessful) {
-                navigateToMain()
-            } else {
-                val errorText = if (!task.isSuccessful) task.exception?.message.toString() else "Authentication failed"
-                Toast.makeText(baseContext, errorText,
-                    Toast.LENGTH_SHORT).show()
-            }
+        val email = emailField.text.toString()
+        val pass = passwordField.text.toString()
+        if (email.isNotEmpty() && pass.isNotEmpty()) {
+            auth.signInWithEmailAndPassword(email, pass)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        navigateToMain()
+                    } else {
+                        val errorText =
+                            if (task.exception != null) task.exception?.message.toString() else "Authentication failed"
+                        Toast.makeText(
+                            baseContext, errorText,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
         }
     }
 }

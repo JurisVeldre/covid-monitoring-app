@@ -2,30 +2,19 @@ package com.example.covid_monitoring_app.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.ScaleDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.RemoteException
-import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -65,7 +54,8 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         auth = Firebase.auth
         database = Firebase.database.reference
         setContentView(R.layout.activity_readings)
-        findViewById<Button>(R.id.reportCountButton).setOnClickListener { displayPeopleCountAlert() }
+        findViewById<Button>(R.id.reportCountButton)
+            .setOnClickListener { if(closestBeacon == null) showNoBeaconToast() else displayPeopleCountAlert() }
         getRoomIdList()
         setupToolbar()
         checkLocationPermission()
@@ -81,6 +71,11 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         showLogoutDialog()
         return true
+    }
+
+    private fun showNoBeaconToast() {
+        Toast.makeText(baseContext, "No room detected to report people in",
+            Toast.LENGTH_SHORT).show()
     }
 
     private fun showLogoutDialog() {

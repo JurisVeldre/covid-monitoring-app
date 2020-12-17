@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -85,6 +86,7 @@
         android:autoSizeTextType="uniform"
         android:autoSizeMaxTextSize="100sp"
         android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
         app:layout_constraintBottom_toBottomOf="@+id/emailView"
         app:layout_constraintEnd_toEndOf="@+id/emailView"
         app:layout_constraintStart_toEndOf="@+id/emailIcon"
@@ -109,6 +111,10 @@
         android:layout_marginStart="12dp"
         android:layout_marginEnd="0dp"
         android:inputType="textPassword"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMaxTextSize="100sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
         app:layout_constraintBottom_toBottomOf="@+id/passwordView"
         app:layout_constraintEnd_toEndOf="@+id/passwordView"
         app:layout_constraintStart_toEndOf="@+id/passwordIcon"

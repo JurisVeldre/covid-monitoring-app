@@ -36,7 +36,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <View
-        android:id="@+id/emailView"
+        android:id="@+id/passwordView"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
@@ -50,48 +50,76 @@
         app:layout_constraintStart_toStartOf="@+id/miniCardView"/>
 
     <View
-        android:id="@+id/passwordView"
+        android:id="@+id/emailView"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
         android:background="#E2E2E2"
-        app:layout_constraintBottom_toTopOf="@+id/emailView"
+        app:layout_constraintBottom_toTopOf="@+id/passwordView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/miniCardView"
         app:layout_constraintRight_toRightOf="@+id/miniCardView"
         app:layout_constraintTop_toTopOf="@+id/miniCardView"
         app:layout_constraintVertical_bias="0.99"/>
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/emailIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/email_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/emailView"
+        app:layout_constraintEnd_toStartOf="@+id/emailField"
+        app:layout_constraintStart_toStartOf="@+id/emailView"
+        app:layout_constraintTop_toTopOf="@+id/emailView"
+        app:layout_constraintVertical_bias="0.5" />
+
     <EditText
         android:id="@+id/emailField"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="0dp"
         android:inputType="textEmailAddress"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeMaxTextSize="100sp"
+        app:autoSizeStepGranularity="2sp"
+        android:lines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/emailView"
+        app:layout_constraintEnd_toEndOf="@+id/emailView"
+        app:layout_constraintStart_toEndOf="@+id/emailIcon"
+        app:layout_constraintTop_toTopOf="@+id/emailView"
+        tools:showIn="@layout/activity_login"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/passwordIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/password_icon"
         app:layout_constraintBottom_toBottomOf="@+id/passwordView"
-        app:layout_constraintEnd_toEndOf="@+id/passwordView"
+        app:layout_constraintEnd_toStartOf="@+id/passwordField"
         app:layout_constraintStart_toStartOf="@+id/passwordView"
         app:layout_constraintTop_toTopOf="@+id/passwordView"
-        tools:showIn="@layout/activity_login"/>
+        app:layout_constraintVertical_bias="0.5" />
 
     <EditText
         android:id="@+id/passwordField"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="0dp"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="@+id/emailView"
-        app:layout_constraintEnd_toEndOf="@+id/emailView"
-        app:layout_constraintStart_toStartOf="@+id/emailView"
-        app:layout_constraintTop_toTopOf="@+id/emailView"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeMaxTextSize="100sp"
+        app:autoSizeStepGranularity="2sp"
+        android:lines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/passwordView"
+        app:layout_constraintEnd_toEndOf="@+id/passwordView"
+        app:layout_constraintStart_toEndOf="@+id/passwordIcon"
+        app:layout_constraintTop_toTopOf="@+id/passwordView"
         tools:showIn="@layout/activity_login"/>
 
     <Button

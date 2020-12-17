@@ -14,15 +14,11 @@ fs.readFile("cert.pem", ((err, data) => {
     return
   }
   var options = {
-    port: 8883,
-    host: "mqtts://ec2-13-48-133-235.eu-north-1.compute.amazonaws.com",
-    username: 'vpp-user',
-    password: 'ECMlim@1',
     ca: data.toString(),
     rejectUnauthorized: true,
   }
   
-  client = mqtt.connect('mqtts://ec2-13-48-133-235.eu-north-1.compute.amazonaws.com:8883', options)
+  client = mqtt.connect(, options)
   
   
   client.on('connect', (() => {
@@ -91,9 +87,9 @@ exports.parseCountReports = functions.database.ref('/rooms/{roomID}/reports/{use
     }
   }).then(() => {
     return pplCountRef.transaction((count) => {
-      const oldAvg = previousSum / previousCount
+      const oldAvg = Math.ceil(previousSum / previousCount)
       count = count - oldAvg 
-      const newAvg = pplCountSum / reportCount
+      const newAvg = Math.ceil(pplCountSum / reportCount)
       count += newAvg 
       return count 
     })
@@ -101,10 +97,11 @@ exports.parseCountReports = functions.database.ref('/rooms/{roomID}/reports/{use
 })
 
 exports.pplCountChange = functions.database.ref('/rooms/{roomID}/pplCount').onWrite(async (change, context) => {
-  const newPplCount = change.after.val().pplCount
-  
-  const mqtt = await publishViaMqtt("", newPplCount)
-  return mqtt
+  if (context.params.roomID !== "null") {
+    const newPplCount = change.after.val()
+    const mqtt = await publishViaMqtt("", newPplCount)
+    return mqtt
+  }
 })
 
 const publishViaMqtt = async (roomId, peopleCount) => {

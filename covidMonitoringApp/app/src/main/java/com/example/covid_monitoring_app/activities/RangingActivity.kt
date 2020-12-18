@@ -3,10 +3,15 @@ package com.example.covid_monitoring_app.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.RemoteException
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -55,10 +60,11 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         database = Firebase.database.reference
         setContentView(R.layout.activity_readings)
         findViewById<Button>(R.id.reportCountButton)
-            .setOnClickListener { if(closestBeacon == null) showNoBeaconToast() else displayPeopleCountAlert() }
+            .setOnClickListener { if (closestBeacon == null) showNoBeaconToast() else displayPeopleCountAlert() }
         getRoomIdList()
         setupToolbar()
         checkLocationPermission()
+        showLocationPopup()
     }
 
     override fun onDestroy() {
@@ -71,6 +77,33 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         showLogoutDialog()
         return true
+    }
+
+    private fun showLocationPopup() {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (!mBluetoothAdapter.isEnabled)
+            AlertDialog.Builder(this)
+                .setTitle("Activate bluetooth")
+                .setMessage("For this app to work bluetooth must be turned on")
+                .setPositiveButton("Turn bluetooth on") { _, _ ->
+                    mBluetoothAdapter.enable()
+                    if (!gpsStatus)
+                        AlertDialog.Builder(this)
+                            .setTitle("GPS setting!")
+                            .setMessage("GPS is not enabled, Do you want to go to settings menu? ")
+                            .setPositiveButton("Setting") { _, _ ->
+                                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            }
+                            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+                            .show();
+                }
+                .setNegativeButton(
+                    getString(R.string.cancel)
+                ) { _, _ -> }
+                .show()
     }
 
     private fun showNoBeaconToast() {
@@ -132,7 +165,7 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
     }
 
     private fun getData() {
-        val url = "http://c89dcc90f99d.ngrok.io/institutions/5fc0e64967ab055ee9422dd3/rooms/5fc10cd967ab055ee9422de2/api"
+        val url = "http://6aeb6d72049e.ngrok.io/apis/34653d34-d92b-40cf-9bb0-245f33abaec5"
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,

@@ -45,7 +45,6 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:background="#e2e2e2"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
         app:layout_constraintEnd_toEndOf="@+id/miniCardView"
         app:layout_constraintStart_toStartOf="@+id/miniCardView"/>
@@ -57,7 +56,6 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:background="#E2E2E2"
         app:layout_constraintBottom_toTopOf="@+id/passwordView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/miniCardView"
@@ -132,6 +130,7 @@
         android:layout_marginBottom="24dp"
         android:text="@string/sign_in"
         android:textSize="20sp"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/signupButton"
         app:layout_constraintEnd_toEndOf="@+id/miniCardView"
         app:layout_constraintHorizontal_bias="0.5"

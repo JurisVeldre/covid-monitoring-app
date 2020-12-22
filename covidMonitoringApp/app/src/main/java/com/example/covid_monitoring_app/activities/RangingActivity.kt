@@ -79,6 +79,10 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         return true
     }
 
+    override fun onBackPressed() {
+        showLogoutDialog()
+    }
+
     private fun showLocationPopup() {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)

@@ -65,6 +65,7 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         setupToolbar()
         checkLocationPermission()
         showLocationPopup()
+        saveRegisterToken()
     }
 
     override fun onDestroy() {
@@ -108,6 +109,17 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
                     getString(R.string.cancel)
                 ) { _, _ -> }
                 .show()
+    }
+
+    private fun saveRegisterToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (!it.isSuccessful) {
+                return@addOnCompleteListener
+            }
+            val token = it.result
+            val userId = auth.uid
+            database.child("users").child(userId.toString()).child("token").setValue(token)
+        }
     }
 
     private fun showNoBeaconToast() {

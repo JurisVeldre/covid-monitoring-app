@@ -97,17 +97,20 @@ exports.parseCountReports = functions.database.ref('/rooms/{roomID}/reports/{use
 })
 
 exports.pplCountChange = functions.database.ref('/rooms/{roomID}/pplCount').onWrite(async (change, context) => {
-  if (context.params.roomID !== "null") {
+  const roomID = context.params.roomID
+  if (roomID !== "null") {
     const newPplCount = change.after.val()
-    const mqtt = await publishViaMqtt("", newPplCount)
+    const mqtt = await publishViaMqtt(roomID, newPplCount)
     return mqtt
   }
 })
 
 const publishViaMqtt = async (roomId, peopleCount) => {
-  const topic = 'Test/test'
+  const topic = 'VPP-APP/beacons'
   var message = {
-    peopleCount
+    people_count: peopleCount,
+    time: new Date(),
+    beacon_Id: roomId
   }
   message = JSON.stringify(message)
   return new Promise((resolve, reject) => {

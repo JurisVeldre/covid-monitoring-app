@@ -374,9 +374,10 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
 
     private fun sendLocation(closestBeacon: Beacon?) {
         val userId = auth.currentUser?.uid
-        val roomObject =
-            RoomObject(roomId = closestBeacon?.id1.toString())
-        database.child("users").child(userId.toString()).setValue(roomObject)
+        database.child("users")
+            .child(userId.toString())
+            .child("roomId")
+            .setValue(closestBeacon?.id1.toString())
     }
 
     override fun onBeaconServiceConnect() {

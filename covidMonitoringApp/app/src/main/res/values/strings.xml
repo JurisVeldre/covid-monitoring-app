@@ -11,7 +11,7 @@
     <string name="people_in_room">People in room:</string>
     <string name="zero">…</string>
     <string name="temperature_in_room">Temperature in room:</string>
-    <string name="co2_in_room">CO2 in room:</string>
+    <string name="co2_in_room">CO<sub><small>2</small></sub> in room:</string>
     <string name="moisture_in_room">Moisture in room</string>
     <string name="pressure_in_room">Atmospheric\npressure in room</string>
     <string name="report_people_count_in_room">Report people\ncount in room</string>

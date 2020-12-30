@@ -3,11 +3,15 @@ package com.example.covid_monitoring_app.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
 import android.os.RemoteException
@@ -19,6 +23,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.Request
 import com.android.volley.Response
@@ -39,7 +44,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import org.altbeacon.beacon.*
 import org.json.JSONObject
-import java.util.zip.Inflater
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 
 class RangingActivity : AppCompatActivity(), BeaconConsumer {
@@ -53,6 +59,9 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
     private var refreshCounter = 0
     private var roomList = mutableListOf<RoomIDObject>()
     private var shouldStopPosting = false
+    private var shouldSendNotif: Boolean by Delegates.observable(false) { _, _, newValue ->
+        if (newValue) sendNotif()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +124,30 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
             Toast.LENGTH_SHORT).show()
     }
 
+    private fun sendNotif() {
+        val intent = Intent(this, this.javaClass)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
+        val title = "High risk for infection detected!"
+        val text = "Please leave the room and let air circulate."
+        val channelId = "Default"
+
+        val builder = NotificationCompat.Builder(this, channelId)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setSmallIcon(R.drawable.danger_icon)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId, "High Channel", NotificationManager.IMPORTANCE_HIGH)
+            manager.createNotificationChannel(channel)
+        }
+        val notification = builder.build()
+        manager.notify(0, notification)
+    }
+
     private fun showLogoutDialog() {
         AlertDialog.Builder(this)
             .setTitle("Logout?")
@@ -169,28 +202,29 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
     }
 
     private fun getData() {
-        val url = "http://6aeb6d72049e.ngrok.io/apis/34653d34-d92b-40cf-9bb0-245f33abaec5"
+        val url = "http://65dc018f42ed.ngrok.io/api/34653d34-d92b-40cf-9bb0-245f33abaec5"
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,
             Response.Listener { response ->
-                updateUI(parseJson(response.getJSONObject("measurements")), getRoomName(response))
+                updateUI(parseJson(response.getJSONObject("measurements"), response.getJSONObject("beacon_data").getString("people_count").toInt()), getRoomName(response))
+                shouldSendNotif = response.getBoolean("co2_limit") || response.getBoolean("humidity_limit")
             },
             Response.ErrorListener { error ->
                 Log.i(TAG, error.toString())
             }
         )
 
-        // Access the RequestQueue through your singleton class.
         Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
     }
 
-    private fun parseJson(jsonObj: JSONObject): ReadingObject {
+    private fun parseJson(jsonObj: JSONObject, peopleCount: Int): ReadingObject {
         return ReadingObject(
             atmosphericPressure = jsonObj.getInt("atmosphericpressure"),
             co2 = jsonObj.getString("co2"),
             humidity = jsonObj.getString("humidity"),
-            temperature = jsonObj.getDouble("temperature")
+            temperature = jsonObj.getDouble("temperature"),
+            peopleCount = peopleCount
         )
     }
 
@@ -206,10 +240,11 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         val humidityLabel = findViewById<TextView>(R.id.moistureCountLabel)
         val pressureLabel = findViewById<TextView>(R.id.pressureCountLabel)
 
-        co2Label.text = readings.co2 + "ppm"
+        pplLabel.text = readings.peopleCount.toString() + " People"
+        co2Label.text = readings.co2 +  " ppm"
         temperatureLabel.text = readings.temperature.toString() + " °C"
         humidityLabel.text = readings.humidity + "%"
-        pressureLabel.text = readings.atmosphericPressure.toString() + "Pa"
+        pressureLabel.text = readings.atmosphericPressure.toString() + " Pa"
         supportActionBar?.title = roomName
     }
 

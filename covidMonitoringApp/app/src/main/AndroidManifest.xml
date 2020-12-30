@@ -21,14 +21,6 @@
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/danger_icon"/>
 
-        <service android:name=".FirebaseMessageInstance"
-            android:stopWithTask="false"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-
         <activity android:name=".activities.RangingActivity"/>
         <activity android:name=".activities.SignUpActivity"/>
         <activity android:name=".activities.LoginActivity">

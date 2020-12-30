@@ -127,34 +127,3 @@ const publishViaMqtt = async (roomId, peopleCount) => {
     }))
   })
 }
-
-exports.sendPushNotification = functions.database.ref('/rooms/{roomID}/shouldSendNotification').onWrite((change, context) => {
-  if (change.after.val() !== true) {
-    return Promise.reject(Error("Shouldn't send if false"))
-  } else return db.ref(`users`).once("value", snapshot => {
-    var roomId = context.params.roomID
-    var val = snapshot.val()
-    
-    var tokens = []
-
-    const payload = {
-      data: {
-        title: 'High risk for infection detected!',
-        body: 'Please leave the room and let air circulate.'
-      },
-      notification: {
-        title: 'High risk for infection detected!',
-        body: 'Please leave the room and let air circulate.'
-      }
-    };
-    for (var key in val) {
-      if (val[key].roomId === roomId) {
-        tokens.push(val[key].token)
-      }
-    }
-
-    admin.messaging().sendToDevice(tokens, payload)
-  }, error => {
-    console.log("The read failed: " + error.code);
-  });
-})

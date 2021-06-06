@@ -69,7 +69,7 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         database = Firebase.database.reference
         setContentView(R.layout.activity_readings)
         findViewById<Button>(R.id.reportCountButton)
-            .setOnClickListener { if (closestBeacon == null) showNoBeaconToast() else displayPeopleCountAlert() }
+            .setOnClickListener { if (closestBeacon == null) displayPeopleCountAlert() else showNoBeaconToast() }
         getRoomIdList()
         setupToolbar()
         checkLocationPermission()
@@ -201,9 +201,8 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
             })
     }
 
-    private fun getData() {
-        val url = "http://65dc018f42ed.ngrok.io/api/34653d34-d92b-40cf-9bb0-245f33abaec5"
-
+    private fun getData(uuid: String) {
+        var url = "http://241d2613425e.ngrok.io/api/$uuid"
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,
             Response.Listener { response ->
@@ -362,13 +361,14 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         temperatureLabel.text = "..."
         humidityLabel.text = "..."
         pressureLabel.text = "..."
-        supportActionBar?.title = "..."
+        runOnUiThread {
+            supportActionBar?.title = "..."
+        }
     }
 
 
     private fun parseBeacons(beacons: (Array<Beacon>)) {
         val closestBeacon = beacons.minBy { it.distance }
-        Log.i(TAG, "Closest beacon: $closestBeacon")
         noneCount = 0
         if (!checkRoomList(closestBeacon)) {
             resetUI()
@@ -379,16 +379,16 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
             if (closestBeacon != this.closestBeacon) {
                 sendLocation(closestBeacon)
                 this.closestBeacon = closestBeacon
-                if (closestBeacon != null) getData() else resetUI()
+                if (closestBeacon != null) getData(closestBeacon.id1.toString()) else resetUI()
                 refreshCounter = 0
             }
-            if (refreshCounter > 59) {
+            if (refreshCounter > 10) {
                 Toast.makeText(
                     this,
                     "Refreshing data",
                     Toast.LENGTH_LONG
                 ).show()
-                getData()
+                getData(closestBeacon?.id1.toString())
                 refreshCounter = 0
             }
             refreshCounter++
@@ -423,6 +423,7 @@ class RangingActivity : AppCompatActivity(), BeaconConsumer {
         } catch (e: RemoteException) {
         }
     }
+
     companion object {
         private const val TAG = "RangingActivity"
     }
